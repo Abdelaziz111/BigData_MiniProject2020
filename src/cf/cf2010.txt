@@ -1,0 +1,168 @@
+
+Un homme de 55 ans consulte pour une hypertension mal contrôlée sous bithérapie par 1 ESIDREX® (Hydrochlorothiazid 25mg/j + AMLOR®  (Amlodipin 5mg/j. Sa pression artérielle au cabinet médical est à 155 / 92 mmHg. Il a un poids de 88 kg pour 1.70 m avec un tour de taille à 106 cm. Il boit régulièrement (chaque jour) 8 verres standards de boissons alcoolisées et fume 30 cigarettes par jour depuis 20 ans. Son bilan sanguin à jeun montre une kaliémie à 3.2 mmol/l et un profil lipidique avec 2.60g/l de cholestérol 0.35 g/l de cholestérol HDL et 2.20 g/l de triglycérides sans traitement hypolipémiant.
+
+Calculer l’index de masse corporel (IM.
+
+
+Définir le type de morphologie : 
+     poids normal
+     surpoids
+     obésité androide
+     obésité morbide
+     maigreur
+
+
+Calculer sa consommation d’alcool en g/j.
+
+
+Calculer sa consommation totale de tabac en paquets / années.
+
+
+Quel est le mécanisme le plus probable de son hypokaliémie ?
+     alcool
+     diurétique
+     hypéraldostéronisme primaire
+     laxatifs
+     consommation de réglisse
+
+
+Quelles sont les 3 causes les plus probables de résistance au traitement anti-hypertenseur ?
+     dyslipidémie
+     alcool
+     mauvaise observance thérapeutique
+     hypertension secondaire
+     surcharge pondérale
+
+
+Un homme de 35 ans sans antécédent connu, arrive aux urgences pour dyspnée aiguë, fièvre à 40°C avec douleur basithoracique droite. Les symptômes ont débutés brutalement la veille au soir. Vous suspectez une pneumonie franche lobaire aiguë droite.
+
+Quels critères de gravité recherchez-vous parmi les propositions suivantes ?
+     expectoration purulente
+     état de choc
+     fréquence respiratoire >30/mn
+     frissons
+     somnolence et/ou confusion
+
+Quel germe paraît le plus probable ?
+     Escherichia coli
+     H1N1
+     Haemophilus influenza
+     Mycoplasma pneumoniae
+     Streptococcus pneumoniae
+
+Quelles sont les caractéristiques microbiologiques de ce germe ?
+     cocci GRAM-positif
+     cocci GRAM-négatif
+     diplocoque
+     bacille GRAM-négatif
+     virus
+
+Les gaz du sang effectués en air ambiant montrent les résultats suivants : 
+PH 7.40 -  PO2  = 55mmHg - P CO2=30mmHg – HCO3 = 24mM - Sa O2 =89%
+     Comment calculez-vous l’effet shunt ?
+     Ce patient à t-il un effet shunt ? justifiez par un calcul.
+
+Quel est le mécanisme d’action de la pénicilline ?
+     se fixe sur la sous-unité 30s du ribosome
+     inhibe la synthèse du peptidoglycane
+     se fixe sur l’ADN-gyrase
+     inhibe la thymidine kinase
+     inhibe la protéase
+
+
+Une femme de 76 ans consulte son médecin pour le suivi d’un diabète de type 2 équilibré par régime. Elle ne fume pas, elle ne boit pas. Elle n’a pas de symptôme actuel. Son examen clinique est normal hormis une pression artérielle à 
+170/80 mmHg, un IMC à 32 kg/m2 et un pouls irrégulier.
+Son bilan sanguin est normal (HbA1c à 6%) sauf la TSH à 0.1 UI/L avec FT4 à 16 pg/ml. L’électrocardiogramme montre une arythmie complète par fibrillation auriculaire avec rythme cardiaque moyen à 82 bpm.
+
+
+Quels sont les facteurs favorisants possibles de son arythmie ?
+
+     hyperthyroidie
+     hypertension artérielle
+     abus d’alcool
+     infection aiguë
+     hypothyroidie
+
+
+Quelle(s) complication(s) cardiovasculaire(s) cette arythmie fait-elle craindre ?
+
+     infarctus du myocarde
+     phlébite
+     dysfonction cardiaque
+     accident vasculaire cérébrale isthémique
+     accident vasculaire cérébrale hémorragique
+
+
+Quels éléments permettent d’apprécier le risque cérébro-vasculaire de cet arythmie cardiaque (score de Chads) ?
+
+     antécédent personnel d’accident vasculaire cérébral
+     hypertension artérielle
+     diabète
+     insuffisance cardiaque congestive
+     âge > 75 ans
+    f) sexe féminin
+    g) IMC > 30 kg/m2
+
+
+
+Que prescrivez-vous comme traitement antithrombotique au long cours ?
+
+     Aspirine
+     Anti-vitamine K
+     Plavix
+     Cordarone
+     Statine
+
+
+Quel est l’élément de surveillance du traitement anti-thrombotique choisi?
+
+
+Chez cette patiente la Cordarone est contre indiquée.
+
+Quels sont les mécanismes d’intéraction entre la Cordarone et les hormones thyroïdiennes :
+
+     Bloque la transformation périphérique de T3 en T4
+     Bloque la transformation périphérique de T4 en T3
+     surcharge iodée dans l’organisme 
+     diminue le taux de cholestérol sanguin
+     se fixe à la thyroglobiline
+
+
+Un homme de 60  ans  consulte pour la prise en charge d’un myelome  multiple.
+
+
+Parmi les immunoglobulines suivantes quelle est la seule qui n’est jamais rencontrée dans le myélome multiple ?
+
+     IgA
+     IgG
+     IgE
+     IgM
+     Chaine légère Kappa
+
+Sa calcémie est à 2,51/mM, ses protides totaux à 86g/L, son albumine à 28g/L
+Calculez la calcémie corrigée en mM.
+
+
+Quelle prolifération cellulaire est responsable du myélome ?
+
+     Lymphocyte B
+     Lymphocyte T
+     Plaquettes
+     Plasmocyte
+     Macrophage
+
+Mécanisme d’action des Biphosphonates ?
+
+     Chelateur de calcium
+     Apoptose de fibroblaste
+     Action antiosteoclastique
+     Inhibition de la réabsorption tubulaire du phosphore
+     Inhibition de la calcium –Binding Protein
+
+Parmi les examens suivants, quel est celui qui est contre indiqué au cours du myélome ?
+
+     Echographie rénale
+     Ostéodensitométrie
+     Scintigraphie osseuse
+     Radiographie standard
+     Tomodensitométrie avec injection de produit de contraste iodé.
