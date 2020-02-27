@@ -1,93 +1,184 @@
-# Compte rendu Bid Data 
+# Compte rendu Bid Data Mini_ProjectII
 réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
-### Traitement sur le fichier Cf 
-#### Question 1
-1. on crée un  sc et charge les fichier dans la dans un RDD *line* pour l'utiliser plustard dans le traitement des diffirent fichier de Cf 
 
-```JAVA
-    JavaSparkContext sc = new JavaSparkContext(conf);
-    JavaRDD<String> lines = sc.textFile("src/cf/*"); 
+#### Question 1
+##### Configuration et importation 
+
+* Dans ce projet, nous avons décidés de travailler avec le langage Scala; pour cela, on doit effectuer certaine configuration pour que nous puissons faire ce travail.
+* Pour cela, nous avons téléchager /spark-3.0.0-preview2-bin-hadoop2.7 et on l'a rajouté au variable d'environnement Windwos, ensuite rajouté graphFrame au SPARK_HOME en ligne de commande pour pouvoir importer l'API GraphGrame et faire le TP.
+* Ensuite, on a procédé à la déclaration de SrarkSession comme ceci :
+
+
+```scala
+    System.setProperty("hadoop.home.dir", "C:/Program Files/spark-3.0.0-preview2-bin-hadoop2.7")
+
+      val spark = SparkSession.builder.appName("BigDataProjet").config("spark.master", "local[*]").getOrCreate
+          spark.sparkContext.setLogLevel("ERROR")
+
 ```    
 
 #### Question 2
-1. Tout à bord, on a créé un RDD qui contient tous les mots du fichier spliter avec un espace qui est *wordsFromFile*  en utilisant al fonction ftalMap
-```JAVA
-    JavaRDD<String> wordsFromFile = lines.flatMap(content -> Arrays.asList(content.split(" ")).iterator());
+##### Create Vertices (airports) and Edges
+1. Tout à bord, on charge les deux fichiers qui vont nous servir de *Vertices* et de *Edges* (departuredelays.csv et airports.dat.txt) comme ceci :  *wordsFromFile*  en utilisant al fonction ftalMap
+```scala
+     val tripdelaysFilePath = "src/main/scala/exemple/data/departuredelays.csv"
+          val airportsnaFilePath = "src/main/scala/exemple/data/airports.dat.txt"
+
+          val airportsna = spark.sqlContext.read.format("com.databricks.spark.csv").
+            option("header", "true").
+            option("inferschema", "true").
+            option("delimiter", "\t").
+            load(airportsnaFilePath)
+
 ```
-2. Ensuite pour faire le cout, on doit d'abors filtrer en enlevant les **/** et les espace 
-```JAVA
-    JavaRDD<String> wordsFilter = wordsFromFile.filter(w -> !w.isEmpty()).filter(w->!w.equals("/")).distinct();
+2. Ensuite on passe à la création des *Vertices* et de *Edges* et pour cela nous avons besoins de créer deux **Dataset** qui vont contenir le contenu des deux fichiers comme ceci : 
+```scala
+    
+    val departureDelays = spark.sqlContext.read.format("com.databricks.spark.csv").option("header", "true").load(tripdelaysFilePath)
+          departureDelays.createOrReplaceGlobalTempView("departureDelays")
+          departureDelays.cache()
+
+    val airports = spark.sqlContext.sql("select f.IATA, f.City, f.State, f.Country from global_temp.airports_na f join global_temp.tripIATA t on t.IATA = f.IATA")
+          airports.createOrReplaceGlobalTempView("airports")
+          airports.cache()
+
 ```
-3. On a utilsié la focntion **count** pour compter les mots sur un RDD de pair en clé/valeur  qu'on a créé avec la fonction *mapToPair* et avec la fonction reduceByKey on fait le compte sur la colonne key 
-```JAVA
-   JavaPairRDD<String, Long> pairs = wordsFilter.mapToPair(s -> new Tuple2<>(s, 1L));
-    JavaPairRDD<String, Long> counts = pairs.reduceByKey((a, b) -> a + b);
-    counts.sortByKey(true, 1);
+* De même pour **IATA**. On aussi utilisé la fonction **createOrReplaceGlobalTempView** pour créer un tableau temporaire qui va nous servire dans les opérations qui suivent.
+3. Ensuite, on définit un autre DataSet **departureDelays_geo** pour Obtenir des attributs clés tels que la *date du vol*, les *retards*, la *distance* et les informations sur les *airports* (origine, destination) comem ceci :
+```scala
+   val departureDelays_geo = spark.sqlContext.sql("select cast(f.date as int) as tripid, cast(concat(concat(concat(concat(concat(concat
+          ('2014-', concat(concat(substr(cast(f.date as string), 1, 2), '-')), substr(cast(f.date as string), 3, 2)), ' '),
+          substr(cast(f.date as string), 5, 2)), ':'), substr(cast(f.date as string), 7, 2)), ':00') as timestamp) as `localdate`, cast(f.delay as int),
+          cast(f.distance as int), f.origin as src, f.destination as dst, o.city as city_src, d.city as city_dst, o.state as state_src,
+          d.state as state_dst from global_temp.departuredelays f join global_temp.airports o on o.iata = f.origin join global_temp.airports d on d.iata = f.destination")
 ```
-4. ensuite on affecte dans uen variable le nombre totale et on l'affiche 
-```JAVA
-    int totalLength = lineLengths.reduce((a, b) -> a + b);
+4. Et à la fin, on construit nos *Vertice et Edges* comem ceci :  
+```scala
+    val tripVertices = airports.withColumnRenamed("IATA", "id").distinct()
+          val tripEdges = departureDelays_geo.select("tripid", "delay", "src", "dst", "city_dst", "state_dst")
+
 ``` 
 
-#### Question 3
-* Tout à bord, on charge le fichier stopWords dans un nouvel RDD _stopFrenchW_ ensuite puisque les RDDs de stopWords et des fichier du dossier Cf sont en structurés en colonnne on peut directement utilsier la fonction **subtract** pour enlever les stopWords des mots des autres fichiers 
-```JAVA
-    JavaRDD<String> stopFrenchW = sc.textFile("src/test/Frenchstopwords.txt") ;
-    JavaRDD<String> wordSubstracted = wordsFromFile.filter(w -> !w.isEmpty()).filter(w->!w.equals("/")).subtract(stopFrenchW);
-``` 
-
-#### Question 4 
-* Pour afficher les top 10 mots les plus répétés dans les fichiers, on doit d'abord inverser dnas un novel RDD la liste pair qui est dans le RDD **wordSubstracted** par ce que dans la deuxième colonne on a la valeur de chaque mot de combien il est répété dans la totalité des fichier, ensuite on les trie et on commance le calcul à partir du bas car le tri est par ordre croissant des valeurs 
-```JAVA
-    JavaPairRDD<String, Long> pairsWords = wordSubstracted.mapToPair(s -> new Tuple2<>(s, 1L));
-    JavaPairRDD<String, Long> countWords = pairsWords.reduceByKey((a, b) -> a + b);
-    JavaPairRDD<Long, String> pairsW = countWords.mapToPair(s -> new Tuple2<Long,String>(s._2,s._1)).sortByKey(false,1);
-``` 
+#### Question 3 et 4
+##### On crée le **Graphe** on l'affiche et on affiche aussi les Edges et les Vertices : 
+```scala
+   val tripGraph = GraphFrame(tripVertices, tripEdges)
+          println(tripGraph)
+// afficher les Edges
+    tripVertices.show()
+    tripEdges.show()       
+```
 
 #### Question 5 
-1. Dans cetet partie du TP, nous devons tout à bord sauvegarder tous les ficheirs dans un seul RDD, car avant chaque fichier était dans un RDD à part. Maintenant notre RDD contient la totalité des fichiers. et ça à l'aide de la fonction _wholeTextFiles_
-```JAVA
-JavaPairRDD<String, String> StopFrWords = sc.wholeTextFiles("src/test/Frenchstopwords.txt");
+##### Sort and display the degree of each vertex 
+
+```scala
+     val degree = tripGraph.degrees.sort("degree")
+     degree.show()
 ``` 
-2. Ensuite, on construit un liste de type _Row_ pour structurer chaque fichier dans une seule ligne, on finale le nombre de ligne de notre liste contient exactement le nombre de fichiers de Cf
-```JAVA
-	ArrayList<Row> dataset =  new ArrayList<Row>();
-    
-    	for (Tuple2<String, String> s : data.collect()) {
-    	
-        dataset.add(RowFactory.create(Arrays.asList(s._2.replaceAll("\\s", " ").split(" "))));
-       
-        	}
+
+#### Question 6 
+##### Sort and display the indegree (the number of flights to the airport) of each vertex 
+
+```scala
+    val inDegree = tripGraph.inDegrees.sort("inDegree")
+    inDegree.show()
 ``` 
-..* Donc la, en sauvegarde que la deuxième colonne, car la premère était le chemin relatif du fichier, et on a chaque ligne qui est une transaction correspond a un fichier complet avec tous les mots de ce fichier. Cette démarche nous aidera par la suite pour faire la soustraction des mots.
 
+#### Question 7
+##### Sort and display the outdegree (the number of flights leaving the airport) of each vertex
+```scala
+        val outDegree = tripGraph.outDegrees.sort("outDegree")
+        outDegree.show()
+``` 
 
-#### Question 6
-* La quesion 6, c'est la question qui nous a pris le plus de temps, et pour faire la soustraction des mots du fichier stopFrechWords, on a utiliser la fonction _transform_ de **StopWordsRemover** sur une **Dataset** de type Row
+#### Question 8 
+##### Determine the top transfer airports
+* Pour répondre à cette question, nous devons tout d'abord calculer le *degre Ratio* (inDegree/outDegree) en faisant une jointure sur la colonne l'ID : 
+```scala
+        val degreeRatio = inDegree.join(outDegree, inDegree("id") === outDegree("id")).
+          drop(outDegree("id")).
+          selectExpr("id", "double(inDegree)/double(outDegree) as degreeRatio").
+          cache()
 
-#### Question 7 
-* On affiche la fréquance des items en faisant varié la valeur de le seuil minimum _minsup_ qu ireprésente  le pourcentage de textes où la régle est apparait, pour cela, on utilise le module **FPGrowth**  sur lequel on fixe la valeur du support pour étudier l'extraction d'éléments fréqents 
- ```JAVA
- FPGrowth fpg = new FPGrowth()
-    	    		  .setMinSupport(0.8) // on change ici les valeurs de minsup :0.2, 0.3, 0.5, 0.8 
-    	    		  .setNumPartitions(totalLength);
+        val transferAirports = degreeRatio.join(airports, degreeRatio("id") === airports("IATA")).
+          selectExpr("id", "city", "degreeRatio").
+          filter("degreeRatio between 0.9 and 1.1")
+
+        transferAirports.orderBy("degreeRatio").limit(10).show()
+``` 
+
+#### Question 9 & 10 
+##### Compute the triplets & Print the number of airports and trips of your graph
+
+```scala
+        tripGraph.triplets.show()
+
+  // 10. 
+        println(s"Airports: ${tripGraph.vertices.count()}")
+        println(s"Trips: ${tripGraph.edges.count()}"))
+
+``` 
+
+#### Question 11
+* Pour faire la suite du TP, nosu devons faire quelques configurations pour charger le nouveau fichier en créant un nouvel *DataSet* : 
+
+```scala
+       val tripdelaysFilePath2 = "src/main/scala/exemple/data/departuredelays.csv"
+
+        // Obtain departure Delays data
+        val departureDelays2 = spark.sqlContext.read.format("com.databricks.spark.csv").option("header", "true").load(tripdelaysFilePath2)
+        departureDelays.createOrReplaceGlobalTempView("departureDelays2")
+        departureDelays.cache()
+```
+
+##### Les requetes : 
+1.  Flights departing from **SFO** are most likely to have significant delays
+
+ ```scala
+         val sfoDelayedTrips = tripGraph.edges.
+                      filter("src = 'SFO' and delay > 0").
+                      groupBy("src", "dst").
+                      avg("delay").
+                      sort("avg(delay)")
+
+                        sfoDelayedTrips.show()
 
 ```
 
-#### Question 8 & 10 Non traité 
+2. Destination states tend to have significant delays departing from **SEA** (delay > 10)
 
-#### Question 9
-* à l'aide de **FPGrowth** on peut tester les valeurs du  le pourcentage de fois où la régle est vérifiée  _minconf_ sur laquel on fixe à chaque fois la valeur de _minconf_ pour étudier l'extraction d'éléments fréqents 
- ```JAVA
- double minConfidence = 0.8; // ici on modifie les vaeurs de minconf pour avoir les # résultats : 0.2, 0.5, 0.8
-    	    	    for (AssociationRules.Rule<String> rule
-    	    	      : model.generateAssociationRules(minConfidence).toJavaRDD().collect()) {
-    	    	      System.out.println(
-    	    	        rule.javaAntecedent() + " => " + rule.javaConsequent() + ", " + rule.confidence());
-    	    	    }
+```scala
+         val seaDelayedTrips = tripGraph.edges.filter("src = 'SEA'").filter("delay > 10")
 
+                        seaDelayedTrips.show()
 
 ```
 
-#### Question 11 
-* Dans cette partie, on refait les même démarches mais seulement cette fois ci c'est avec les fichiers du dossier Cp au lieu de Cf
+#### Question 12
+##### Les requetes : 
+1. SFO->JAC->SEA
+
+```scala
+         val filteredPaths = tripGraph.bfs.fromExpr("id = 'SFO'").toExpr("id = 'JAC'").toExpr("id = 'SEA'").run()
+            filteredPaths.show()
+
+```
+
+2. filter query 1 where *delay* <-5. *delay=DEP_DELAY* 
+```scala
+         val filteredPAthsDelayed = tripGraph.
+          find("(a)-[ab]->(b); (b)-[bc]->(c)").
+          filter("(a.id = 'SFO') and (ab.delay < -5 or bc.delay < -5) and (b.id = 'JAC') and (c.id = 'SEA')")
+```
+
+3. Extract the destinations from **SFO**.
+
+```scala
+         val sfoDestinationTrips = tripGraph.edges.
+          filter("src = 'SFO'")
+            .select("dst")
+
+                sfoDestinationTrips.show()
+
+```
