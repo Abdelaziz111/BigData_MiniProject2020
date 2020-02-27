@@ -1,8 +1,8 @@
 # Compte rendu Bid Data Mini_ProjectII
 réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
 
-#### Question 1
-##### Configuration et importation 
+### Question 1
+#### Configuration et importation 
 
 * Dans ce projet, nous avons décidés de travailler avec le langage Scala; pour cela, on doit effectuer certaine configuration pour que nous puissons faire ce travail.
 * Pour cela, nous avons téléchager /spark-3.0.0-preview2-bin-hadoop2.7 et on l'a rajouté au variable d'environnement Windwos, ensuite rajouté graphFrame au SPARK_HOME en ligne de commande pour pouvoir importer l'API GraphGrame et faire le TP.
@@ -17,8 +17,8 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
 
 ```    
 
-#### Question 2
-##### Create Vertices (airports) and Edges
+### Question 2
+#### Create Vertices (airports) and Edges
 1. Tout à bord, on charge les deux fichiers qui vont nous servir de *Vertices* et de *Edges* (departuredelays.csv et airports.dat.txt) comme ceci :  *wordsFromFile*  en utilisant al fonction ftalMap
 ```scala
      val tripdelaysFilePath = "src/main/scala/exemple/data/departuredelays.csv"
@@ -59,8 +59,8 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
 
 ``` 
 
-#### Question 3 et 4
-##### On crée le **Graphe** on l'affiche et on affiche aussi les Edges et les Vertices : 
+### Question 3 et 4
+#### On crée le **Graphe** on l'affiche et on affiche aussi les Edges et les Vertices : 
 ```scala
    val tripGraph = GraphFrame(tripVertices, tripEdges)
           println(tripGraph)
@@ -69,31 +69,31 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
     tripEdges.show()       
 ```
 
-#### Question 5 
-##### Sort and display the degree of each vertex 
+### Question 5 
+#### Sort and display the degree of each vertex 
 
 ```scala
      val degree = tripGraph.degrees.sort("degree")
      degree.show()
 ``` 
 
-#### Question 6 
-##### Sort and display the indegree (the number of flights to the airport) of each vertex 
+### Question 6 
+#### Sort and display the indegree (the number of flights to the airport) of each vertex 
 
 ```scala
     val inDegree = tripGraph.inDegrees.sort("inDegree")
     inDegree.show()
 ``` 
 
-#### Question 7
-##### Sort and display the outdegree (the number of flights leaving the airport) of each vertex
+### Question 7
+#### Sort and display the outdegree (the number of flights leaving the airport) of each vertex
 ```scala
         val outDegree = tripGraph.outDegrees.sort("outDegree")
         outDegree.show()
 ``` 
 
-#### Question 8 
-##### Determine the top transfer airports
+### Question 8 
+#### Determine the top transfer airports
 * Pour répondre à cette question, nous devons tout d'abord calculer le *degre Ratio* (inDegree/outDegree) en faisant une jointure sur la colonne l'ID : 
 ```scala
         val degreeRatio = inDegree.join(outDegree, inDegree("id") === outDegree("id")).
@@ -108,8 +108,8 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
         transferAirports.orderBy("degreeRatio").limit(10).show()
 ``` 
 
-#### Question 9 & 10 
-##### Compute the triplets & Print the number of airports and trips of your graph
+### Question 9 & 10 
+#### Compute the triplets & Print the number of airports and trips of your graph
 
 ```scala
         tripGraph.triplets.show()
@@ -120,7 +120,7 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
 
 ``` 
 
-#### Question 11
+### Question 11
 * Pour faire la suite du TP, nosu devons faire quelques configurations pour charger le nouveau fichier en créant un nouvel *DataSet* : 
 
 ```scala
@@ -132,7 +132,7 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
         departureDelays.cache()
 ```
 
-##### Les requetes : 
+#### Les requetes : 
 1.  Flights departing from **SFO** are most likely to have significant delays
 
  ```scala
@@ -155,8 +155,8 @@ réalisé par le binome : Abdelaziz CHERIFI & Joseph AYEBOU
 
 ```
 
-#### Question 12
-##### Les requetes : 
+### Question 12
+#### Les requetes : 
 1. SFO->JAC->SEA
 
 ```scala
